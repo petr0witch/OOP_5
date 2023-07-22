@@ -4,6 +4,7 @@ import notebook.controller.UserController;
 import notebook.model.User;
 import notebook.util.Commands;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class UserView {
@@ -13,7 +14,7 @@ public class UserView {
         this.userController = userController;
     }
 
-    public void run(){
+    public void run() {
         Commands com;
 
         while (true) {
@@ -37,6 +38,44 @@ public class UserView {
                         throw new RuntimeException(e);
                     }
                     break;
+                case LIST:
+                    try {
+                        List<User> users = userController.readAllUsers();
+                        System.out.println(users);
+                        System.out.println();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                case UPDATE:
+                    try {
+                        String firstName2 = prompt("Имя: ");
+                        String lastName2 = prompt("Фамилия: ");
+                        String phone2 = prompt("Номер телефона: ");
+                        Long userid = Long.parseLong(prompt("Идентификатор пользователя: "));
+                        User updated = new User(firstName2,lastName2, phone2);
+                        userController.updateUser(userid, updated);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+// TODO: 21.07.2023
+                case DELETE:
+                    try {
+                        String idToDelete = prompt("Введите идентификатор пользователя для удаления: ");
+                        Long userIdToDelete = Long.parseLong(idToDelete);
+                        userController.deleteUser(userIdToDelete);
+                        System.out.println("Пользователь с ID " + userIdToDelete + " успешно удален.");
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+
+                case NONE:
+                    continue;
+
+                default: run();
+
             }
         }
     }

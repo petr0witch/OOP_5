@@ -27,4 +27,17 @@ public class UserController {
 
         throw new RuntimeException("User not found");
     }
+
+    public List<User> readAllUsers() {
+        return repository.findAll();
+    }
+
+    public void updateUser(Long userid, User user) {
+        user.setId(userid);
+        repository.update(userid, user);
+    }
+
+    public void deleteUser(Long userIdToDelete) { // TODO: 21.07.2023
+        repository.delete(userIdToDelete);
+    }
 }

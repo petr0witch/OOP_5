@@ -1,6 +1,5 @@
 package notebook.repository.impl;
 
-import notebook.dao.impl.FileOperation;
 import notebook.mapper.impl.UserMapper;
 import notebook.model.User;
 import notebook.repository.GBRepository;
@@ -56,11 +55,49 @@ public class UserRepository implements GBRepository<User, Long> {
 
     @Override
     public Optional<User> update(Long id, User user) {
+        List<User> users = findAll();
+        User editUser = users.stream()
+                .filter(u -> u.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("User is not found"));
+
+        editUser.setId(id);
+        editUser.setFirstName(user.getFirstName());
+        editUser.setLastName(user.getLastName());
+        editUser.setPhone(user.getPhone());
+
+        write(users);
+
         return Optional.empty();
     }
 
+    // TODO: 21.07.2023
     @Override
     public boolean delete(Long id) {
-        return false;
+        List<User> users = findAll();
+        User userToDelete = null;
+
+        for (User user : users) {
+            if (user.getId().equals(id)) {
+                userToDelete = user;
+                break;
+            }
+        }
+
+        if (userToDelete != null) {
+            users.remove(userToDelete);
+            write(users);
+            return true;
+        } else {
+            return false; // Пользователь с указанным идентификатором не найден
+        }
+    }
+
+    private void write(List<User> users) {
+        List<String> lines = new ArrayList<>();
+        for (User u : users) {
+            lines.add(mapper.toInput(u));
+        }
+        operation.saveAll(lines);
     }
 }
