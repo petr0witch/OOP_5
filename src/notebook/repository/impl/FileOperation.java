@@ -19,7 +19,7 @@ public class FileOperation implements Operation<String> {
     }
 
     @Override
-    public List<String> readAll() {
+    public List<String> readAll() {  // Чтение всех
         List<String> lines = new ArrayList<>();
         try {
             File file = new File(fileName);
@@ -47,7 +47,7 @@ public class FileOperation implements Operation<String> {
     }
 
     @Override
-    public void saveAll(List<String> data) {
+    public void saveAll(List<String> data) { // Сохранение всех
         try (FileWriter writer = new FileWriter(fileName, false)) {
             for (String line : data) {
                 // запись всей строки
